@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MainPage.html</title>
+    <link href="css/MainPage.css" rel="stylesheet" />
+    <!-- external css file (page style) -->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <script src="index.js"></script>
+    <!-- external script file (page logic) -->
+</head>
+
+<body>
+    <header>
+        <h1>CREDITS app</h1>
+    </header>
+
+    <main>
+        <button onclick=onClickAddCli()>ADD CLI</button>
+		<button onclick=refresh_all_cli_list()>refresh client list</button>
+		<form class="addCliForm">
+			First name: <input type="text" id="firstname"><br>
+			Last name: <input type="text" id="lastname"><br>
+			Phone number: <input type="number" id="phoneNum"><br>
+			Work Place: <input type="text" id="workPlace"><br>
+		</form>
+		<button onclick=onClickSub() class="addCliForm">Submit</button>
+		<!-- list of all clients -->
+		<ul>
+		</ul>
+	</main>
+	<!-- div of client -->
+	<div id="client_div">
+		<button onclick=onClickDeleteCli() class="addCliForm">Edit Client</button>
+		<button onclick=onClickEditCli() class="addCliForm">Delete Client</button>
+	</div>
+   
+
+</body>
+
+</html>
