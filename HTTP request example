@@ -1,0 +1,70 @@
+# HTTP request example for each lambda function in the server
+### addCostumer : payload ==> JSON object 
+Example:
+{
+  "Firstname": {
+    "S": "Dor"
+  },
+  "Lastname": {
+    "S": "Hermon"
+  },
+  "Phone": {
+    "S": "0534654423"
+  },
+  "Workplace": {
+    "S": "Aroma"
+  }
+}
+
+
+### getCostumer: payload ==> Empty JSON
+Example:
+{} or just without payload at all.
+
+
+### getCostumerByQuery:  payload ==> JSON Object
+Example:
+{
+  "ExpressionAttributeValues": {
+    ":v1": {
+      "S": "Dor"
+    },
+    ":v2": {
+      "S": "Hermon"
+    }
+  },
+  "KeyConditionExpression": "Firstname = :v1 AND Lastname = :v2",
+  "TableName": "Costumers"
+}
+
+### updateCostumer:  payload ==> JSON Object
+Example:
+{
+    "ExpressionAttributeNames": { //attributes to update
+       "#P": "Phone",
+       "#W": "Workpalce"
+    },
+    "ExpressionAttributeValues": { //updating values
+       ":p": {"S": "0523648952"},
+       ":w": {"S": "Mcdonalds"}
+    },
+    "Key": { //the exist item's keys to update
+       "Firstname": {"S": "Dor"},
+       "Lastname": {"S": "Hermon"}
+    },
+    "ReturnValues": "ALL_NEW",
+    "TableName": "Costumers",
+    "UpdateExpression": "SET #W = :w, #P = :p" //don't forget this attr.
+}
+
+
+### deleteCostumer:  payload ==> JSON Object
+Example:
+{
+  "Firstname": {
+    "S": "Dor"
+  },
+  "Lastname": {
+    "S": "Hermon"
+  }
+}
