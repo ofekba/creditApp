@@ -97,3 +97,32 @@ h1{
 	text-decoration: underline;
 	font: italic 40px
 }
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+  }
+
+ul, li{
+	margin: 5px;
+}
+
+li {
+	background-color: #EEEEEE;
+	border: 1px solid #DDDDDD;
+	padding: 3px;
+  }
+
+ .addcliDiv{
+	background-color: #EEEEEE;
+	border: 1px solid #DDDDDD;
+	padding: 3px;
+	margin: 5px;
+  }
+  #client_div{
+	background-color: #EEEEEE;
+	border: 1px solid #DDDDDD;
+	padding: 3px;
+	margin: 5px; 
+  }

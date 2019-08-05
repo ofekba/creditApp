@@ -1,10 +1,28 @@
+//======================CLIENT STRUCTS======================
+
+cli_name_obj={
+    Firstname: {"S":"yuval"},
+    Lastname: {"S":"duek"}
+}
+
+new_cli_form={
+    Firstname: {"S": "yuval"},
+    Lastname: {"S": "duek"},
+    Phone: {"S": "050"},
+    Workplace: {"S": "aroma"}
+}
+
+//======================LOAD PAGE======================
 /**
  * wait to load the page
  */
 $( document ).ready(function() {
     console.log('page is fully loaded');
     $(".addCliForm").hide();
-    refresh_all_cli_list()
+    refresh_all_cli_list();
+    var clients_list;
+    $("#client_div").hide();
+    var clicked_cli_id=-1;
 });
 
 //======================REFRESH PAGE======================
@@ -23,20 +41,23 @@ function refresh_all_cli_list(){
             cli_arr=Http.response.body.Items
             //console.log(cli_arr)
             cli_arr.forEach(loadClients);
+            clients_list=cli_arr;
         }
     }
 }
 
 
-
 function loadClients(item, index) {
     //console.log(item)
 	$(document).ready(function(){
-		$("ul").append("<li>"+index+": "+item.Firstname.S+" "+item.Lastname.S+"</li>");
+		$("ul").append("<li onClick=onClickCli(this.id) id=\""+index+"\">"+index+": "+item.Firstname.S+" "+item.Lastname.S+"</li>");
   
     });
 }
+
+
 //======================ADD CLIENT======================
+
 /**
  * on click listener for the add client buttom
  * open the add client form
@@ -45,61 +66,93 @@ function onClickAddCli(){
 	$(".addCliForm").show();
 }
 
-//new client obj to fill
-new_cli_form={
-    first_name: "yuval",
-    last_name: "duek",
-    phone_num: "050",
-    work_place: "aroma"
-}
-
 /**
  * on click listener for the submit new client form buttom
  * update the new client obj by the form
  * sent POST HTTP request to the server to add new client to the system
  */
 function onClickSub(){
-    new_cli_form.last_name=$("#lastname").val();
-	new_cli_form.first_name=$("#firstname").val();
-	new_cli_form.phone_num=$("#phoneNum").val();
-    new_cli_form.work_place=$("#workPlace").val();
+    new_cli_form.Lastname.S=$("#lastname").val();
+	new_cli_form.Firstname.S=$("#firstname").val();
+	new_cli_form.Phone.S=$("#phoneNum").val();
+    new_cli_form.Workplace.S=$("#workPlace").val();
     console.log(new_cli_form)
-    // const Http = new XMLHttpRequest();
-    // var url='https://832ikitvi4.execute-api.us-east-1.amazonaws.com/Credits/addCostumer';
-    // Http.responseType = 'json';
-    // Http.open("POST", url);
-    // Http.send();
-    // Http.onreadystatechange = (e) => { 
-    //     if(Http.response!=null){
-    //         //do something with ans
-    //     }
-    // }
-	$(".addCliForm").hide();
+    const Http = new XMLHttpRequest();
+    var url='https://832ikitvi4.execute-api.us-east-1.amazonaws.com/Credits/addCostumer';
+    Http.responseType = 'json';
+    Http.open("POST", url);
+    Http.send(JSON.stringify(new_cli_form));
+    Http.onreadystatechange = (e) => { 
+        if(Http.response!=null){
+            //do something with ans
+        }
+    }
+    $(".addCliForm").hide();
+    refresh_all_cli_list();
 	
   }
+
+  function onClickCancel(){
+    $(".addCliForm").hide();
+  }
+
+
 //======================CLIENT SCREEN-SHOW/EDIT/DELETE======================
+
 /**
  * on click listener for a client. open a window with all the client details
  */
-function onClickCli(){
-    $(".client_div").show();
-    $(".client_div").append("<h1>"+clientInformation.Firstname+" "+clientInformation.Lastname+"</h1>");
-    $(".client_div").append("<h2>CREDIT: "+clientInformation.credit+"</h1>");
-    $(".client_div").append("<h2>Last actions:</h2>");
-    $(".client_div").append("<table>");
-    $(".client_div").append("<tr><th>Date</th><th>Action</th></tr>");
+function onClickCli(caller_id){
+    console.log("clicked on costomer")
+
+    console.log(clients_list[Number(caller_id)])
+    clientInformation=clients_list[Number(caller_id)]
+    console.log(clientInformation.Firstname.S)
+    clicked_cli_id=Number(caller_id);
+
+    $("#client_div").show();
+    $("#client_name").html(clientInformation.Firstname.S+" "+clientInformation.Lastname.S);
+    $("#client_details").html(clientInformation.Phone.S+" "+clientInformation.Workplace.S);
+    //$("#client_credit").html("CREDIT: "+clientInformation.credit.N);
+    $("#client_actions").html("<h2>Last actions:</h2>");
+    /*$(".client_actions").append("<table>");
+    $(".client_actions").append("<tr><th>Date</th><th>Action</th></tr>");
     clientInformation.actions.forEach(actionsTable);
-    $(".client_div").append("</table>");
+    $(".client_actions").append("</table>");*/
 }
+
 
   function actionsTable(item) {
 	$(".client_div").append("<tr><th>"+item.Date+"</th><th>"+item.Action+"</th></tr>");
 }
 
+
+function onClickHideCli(){
+    $("#client_div").hide();
+    clicked_cli_id=-1;
+}
+
+
 /**
  * on click listener for delete client.
  */
   function onClickDeleteCli(){
+    console.log(clicked_cli_id);
+    cli_name_obj.Firstname.S=clients_list[clicked_cli_id].Firstname.S
+    cli_name_obj.Lastname.S=clients_list[clicked_cli_id].Lastname.S
+    console.log(cli_name_obj);
+
+    const Http = new XMLHttpRequest();
+    var url='https://832ikitvi4.execute-api.us-east-1.amazonaws.com/Credits/deleteCostumer';
+    Http.responseType = 'json';
+    Http.open("DELETE", url);
+    Http.send(JSON.stringify(cli_name_obj));
+    Http.onreadystatechange = (e) => { 
+        if(Http.response!=null){
+            //do something with ans
+        }
+    }
+    refresh_all_cli_list();
 
   }
 

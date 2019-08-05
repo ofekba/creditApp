@@ -3,7 +3,7 @@
 
 <head>
     <title>MainPage.html</title>
-    <link href="css/MainPage.css" rel="stylesheet" />
+    <link href="MainPage.css" rel="stylesheet" />
     <!-- external css file (page style) -->
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
     <script src="index.js"></script>
@@ -18,22 +18,31 @@
     <main>
         <button onclick=onClickAddCli()>ADD CLI</button>
 		<button onclick=refresh_all_cli_list()>refresh client list</button>
-		<form class="addCliForm">
-			First name: <input type="text" id="firstname"><br>
-			Last name: <input type="text" id="lastname"><br>
-			Phone number: <input type="number" id="phoneNum"><br>
-			Work Place: <input type="text" id="workPlace"><br>
-		</form>
-		<button onclick=onClickSub() class="addCliForm">Submit</button>
+		<div class="addcliDiv">
+			<form class="addCliForm">
+				First name: <input type="text" id="firstname"><br>
+				Last name: <input type="text" id="lastname"><br>
+				Phone number: <input type="number" id="phoneNum"><br>
+				Work Place: <input type="text" id="workPlace"><br>
+			</form>
+			<button onclick=onClickSub() class="addCliForm">Submit</button>
+			<button onclick=onClickCancel() class="addCliForm">Cancel</button>
+		</div>
 		<!-- list of all clients -->
 		<ul>
 		</ul>
-	</main>
-	<!-- div of client -->
+			<!-- div of client -->
 	<div id="client_div">
-		<button onclick=onClickDeleteCli() class="addCliForm">Edit Client</button>
-		<button onclick=onClickEditCli() class="addCliForm">Delete Client</button>
+		<h1 id="client_name"></h1>
+		<h2 id="client_details"></h2>
+		<h2 id="client_credit"></h2>
+		<div id="client_actions"></div>
+		<button onclick=onClickEditCli()>Edit Client</button>
+		<button onclick=onClickDeleteCli()>Delete Client</button>
+		<button onclick=onClickHideCli()>Hide Client</button>
 	</div>
+	</main>
+
    
 
 </body>
