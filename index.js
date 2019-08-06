@@ -9,7 +9,9 @@ new_cli_form={
     Firstname: {"S": "yuval"},
     Lastname: {"S": "duek"},
     Phone: {"S": "050"},
-    Workplace: {"S": "aroma"}
+    Workplace: {"S": "aroma"},
+    Credit: {"S": "0"}//,
+    //Actions: {"L":[{"M": {"Date":{"S":"-1"}}, {"Action":{"S":"-1"}} }] }
 }
 
 //======================LOAD PAGE======================
@@ -76,6 +78,9 @@ function onClickSub(){
 	new_cli_form.Firstname.S=$("#firstname").val();
 	new_cli_form.Phone.S=$("#phoneNum").val();
     new_cli_form.Workplace.S=$("#workPlace").val();
+    new_cli_form.Credit.S=$("#credit").val().toString();
+    if (new_cli_form.Credit.S==null || new_cli_form.Credit.S=="")
+        new_cli_form.Credit.S="0"
     console.log(new_cli_form)
     const Http = new XMLHttpRequest();
     var url='https://832ikitvi4.execute-api.us-east-1.amazonaws.com/Credits/addCostumer';
@@ -85,10 +90,11 @@ function onClickSub(){
     Http.onreadystatechange = (e) => { 
         if(Http.response!=null){
             //do something with ans
+            $(".addCliForm").hide();
+            refresh_all_cli_list();
         }
     }
-    $(".addCliForm").hide();
-    refresh_all_cli_list();
+
 	
   }
 
@@ -113,7 +119,7 @@ function onClickCli(caller_id){
     $("#client_div").show();
     $("#client_name").html(clientInformation.Firstname.S+" "+clientInformation.Lastname.S);
     $("#client_details").html(clientInformation.Phone.S+" "+clientInformation.Workplace.S);
-    //$("#client_credit").html("CREDIT: "+clientInformation.credit.N);
+    $("#client_credit").html("CREDIT: "+clientInformation.Credit.S);
     $("#client_actions").html("<h2>Last actions:</h2>");
     /*$(".client_actions").append("<table>");
     $(".client_actions").append("<tr><th>Date</th><th>Action</th></tr>");
@@ -150,9 +156,10 @@ function onClickHideCli(){
     Http.onreadystatechange = (e) => { 
         if(Http.response!=null){
             //do something with ans
+            refresh_all_cli_list();
         }
     }
-    refresh_all_cli_list();
+    
 
   }
 
