@@ -178,14 +178,7 @@ function onClickEditCredit(){
 }
 
 
-update_cli_struct={
-    ExpressionAttributeNames: {"#C":"Credit"},
-    ExpressionAttributeValues: {_c: {"S":"-1"}},
-    Key: {Firstname: {"S": "Dor"}, Lastname: {"S": "Hermon"}},
-    ReturnValues: "ALL_NEW",
-    TableName: "Costumers",
-    UpdateExpression: "SET #C = _c"
-    }
+
 
 
 
@@ -201,15 +194,23 @@ function onClickSubAction(){
     today = dd + '/' + mm + '/' + yyyy;
     console.log("the action "+new_action+"\t the date "+today);
 
+
+   
+    
     //update the client credit
     clientInformation=clients_list[Number(clicked_cli_id)];
     new_action=Number(new_action);
     clientInformation.Credit.S=(Number(clientInformation.Credit.S)+new_action).toString();
     $("#client_credit").html("CREDIT: "+clientInformation.Credit.S);
-    console.log(update_cli_struct);
-    update_cli_struct.ExpressionAttributeValues._c.S=clientInformation.Credit.S
-    update_cli_struct.Key.Firstname.S=clientInformation.Firstname.S
-    update_cli_struct.Key.Lastname.S=clientInformation.Lastname.S
+    update_cli_struct={
+        ExpressionAttributeNames: {"#C":"Credit"},
+        ExpressionAttributeValues: {":c": {"S":clientInformation.Credit.S}},
+        Key: {Firstname: {"S": clientInformation.Firstname.S}, Lastname: {"S": clientInformation.Lastname.S}},
+        ReturnValues: "ALL_NEW",
+        TableName: "Costumers",
+        UpdateExpression: "SET #C = :c"
+    }
+
     console.log(update_cli_struct);
     
     //sent http put request to update the client on the server
