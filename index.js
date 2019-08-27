@@ -117,6 +117,7 @@ function onClickCli(caller_id){
     clicked_cli_id=Number(caller_id);
 
     $("#client_div").show();
+    $("#add_action").hide();
     $("#client_name").html(clientInformation.Firstname.S+" "+clientInformation.Lastname.S);
     $("#client_details").html(clientInformation.Phone.S+" "+clientInformation.Workplace.S);
     $("#client_credit").html("CREDIT: "+clientInformation.Credit.S);
@@ -166,12 +167,65 @@ function onClickHideCli(){
 /**
  * on click listener to edit client.
  */
-  function onClickEditCli(){}
+  function onClickEditCli(){
+  }
 
  /**
  * on click listener to edit client's credit, and update it as his last action.
  */
-function onClickEditCredit(){}
+function onClickEditCredit(){
+    $("#add_action").show();
+}
+
+
+update_cli_struct={
+    ExpressionAttributeNames: {"#C":"Credit"},
+    ExpressionAttributeValues: {_c: {"S":"-1"}},
+    Key: {Firstname: {"S": "Dor"}, Lastname: {"S": "Hermon"}},
+    ReturnValues: "ALL_NEW",
+    TableName: "Costumers",
+    UpdateExpression: "SET #C = _c"
+    }
+
+
+
+function onClickSubAction(){
+    //get the new action sum
+    var new_action=$("#add_credit").val();
+
+    //current date
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = dd + '/' + mm + '/' + yyyy;
+    console.log("the action "+new_action+"\t the date "+today);
+
+    //update the client credit
+    clientInformation=clients_list[Number(clicked_cli_id)];
+    new_action=Number(new_action);
+    clientInformation.Credit.S=(Number(clientInformation.Credit.S)+new_action).toString();
+    $("#client_credit").html("CREDIT: "+clientInformation.Credit.S);
+    console.log(update_cli_struct);
+    update_cli_struct.ExpressionAttributeValues._c.S=clientInformation.Credit.S
+    update_cli_struct.Key.Firstname.S=clientInformation.Firstname.S
+    update_cli_struct.Key.Lastname.S=clientInformation.Lastname.S
+    console.log(update_cli_struct);
+    
+    //sent http put request to update the client on the server
+    const Http = new XMLHttpRequest();
+    var url='https://832ikitvi4.execute-api.us-east-1.amazonaws.com/Credits/updateCostumer';
+    Http.responseType = 'json';
+    Http.open("PUT", url);
+    Http.send(JSON.stringify(update_cli_struct));
+    Http.onreadystatechange = (e) => { 
+        if(Http.response!=null){
+            //do something with ans
+            $("#add_action").hide();
+            refresh_all_cli_list();
+        }
+    }
+}
 
 
 

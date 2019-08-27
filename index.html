@@ -38,9 +38,14 @@
 		<h2 id="client_details"></h2>
 		<h2 id="client_credit"></h2>
 		<div id="client_actions"></div>
+		<button onclick=onClickEditCredit()>Add Action</button>
 		<button onclick=onClickEditCli()>Edit Client</button>
 		<button onclick=onClickDeleteCli()>Delete Client</button>
 		<button onclick=onClickHideCli()>Hide Client</button>
+		<div id="add_action">
+			Credit: <input type="number" id="add_credit"><br>
+			<button onclick=onClickSubAction()>Submit</button>
+		</div>
 	</div>
 	</main>
 
