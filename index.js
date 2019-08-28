@@ -103,7 +103,7 @@ function onClickSub(){
   }
 
 
-//======================CLIENT SCREEN-SHOW/EDIT/DELETE======================
+//======================CLIENT SCREEN-SHOW/DELETE======================
 
 /**
  * on click listener for a client. open a window with all the client details
@@ -143,7 +143,7 @@ function onClickHideCli(){
 /**
  * on click listener for delete client.
  */
-  function onClickDeleteCli(){
+function onClickDeleteCli(){
     console.log(clicked_cli_id);
     cli_name_obj.Firstname.S=clients_list[clicked_cli_id].Firstname.S
     cli_name_obj.Lastname.S=clients_list[clicked_cli_id].Lastname.S
@@ -160,15 +160,48 @@ function onClickHideCli(){
             refresh_all_cli_list();
         }
     }
-    
+}
 
-  }
+
+//======================CLIENT SCREEN-SHOW/DELETE======================
+
 
 /**
  * on click listener to edit client.
  */
   function onClickEditCli(){
+    console.log("onClickEditCli");
+    $("#edit_details").show();
+    clientInformation=clients_list[Number(clicked_cli_id)];
+    $("#edit_details").html("Phone: <input type=\"number\" id=\"edit_phone\" value=\""+Number(clientInformation.Phone.S)+"\"><br>"
+    +"Work place: <input type=\"text\" id=\"edit_workPlace\" value=\""+clientInformation.Workplace.S+"\"><br>"
+    +"<button onclick=onClickSubEdit()>Submit</button>");
+    
   }
+
+
+  /**
+   * on click method when submit a details change of a client.
+   */
+  function onClickSubEdit(){
+    var new_phone=$("#edit_phone").val();
+    var new_workPlace=$("#edit_workPlace").val();
+    clientInformation=clients_list[Number(clicked_cli_id)];
+
+    update_cli_struct={
+        ExpressionAttributeNames: {"#P": "Phone","#W": "Workpalce"},
+        ExpressionAttributeValues: {":p": {"S":new_phone}, ":w": {"S":new_workPlace}},
+        Key: {Firstname: {"S": clientInformation.Firstname.S}, Lastname: {"S": clientInformation.Lastname.S}},
+        ReturnValues: "ALL_NEW",
+        TableName: "Costumers",
+        UpdateExpression: "SET #W = :w, #P = :p"
+    }
+    console.log(update_cli_struct);
+    sent_put_http_req(update_cli_struct)
+    $("#edit_details").hide();
+    onClickHideCli();
+  }
+
 
  /**
  * on click listener to edit client's credit, and update it as his last action.
@@ -178,10 +211,9 @@ function onClickEditCredit(){
 }
 
 
-
-
-
-
+/**
+ * on click listener for submit new action
+ */
 function onClickSubAction(){
     //get the new action sum
     var new_action=$("#add_credit").val();
@@ -194,9 +226,6 @@ function onClickSubAction(){
     today = dd + '/' + mm + '/' + yyyy;
     console.log("the action "+new_action+"\t the date "+today);
 
-
-   
-    
     //update the client credit
     clientInformation=clients_list[Number(clicked_cli_id)];
     new_action=Number(new_action);
@@ -211,21 +240,27 @@ function onClickSubAction(){
         UpdateExpression: "SET #C = :c"
     }
 
-    console.log(update_cli_struct);
-    
-    //sent http put request to update the client on the server
-    const Http = new XMLHttpRequest();
-    var url='https://832ikitvi4.execute-api.us-east-1.amazonaws.com/Credits/updateCostumer';
-    Http.responseType = 'json';
-    Http.open("PUT", url);
-    Http.send(JSON.stringify(update_cli_struct));
-    Http.onreadystatechange = (e) => { 
-        if(Http.response!=null){
-            //do something with ans
-            $("#add_action").hide();
-            refresh_all_cli_list();
-        }
-    }
+    sent_put_http_req(update_cli_struct)
+    $("#add_action").hide();
+}
+
+
+/**
+ * this method sent HTTP put request to update costumer details
+ * @param {the fields to update} update_cli_struct 
+ */
+function sent_put_http_req(update_cli_struct){
+     //sent http put request to update the client on the server
+     const Http = new XMLHttpRequest();
+     var url='https://832ikitvi4.execute-api.us-east-1.amazonaws.com/Credits/updateCostumer';
+     Http.responseType = 'json';
+     Http.open("PUT", url);
+     Http.send(JSON.stringify(update_cli_struct));
+     Http.onreadystatechange = (e) => { 
+         if(Http.response!=null){
+             refresh_all_cli_list();
+         }
+     }
 }
 
 
