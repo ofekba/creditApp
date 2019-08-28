@@ -48,7 +48,11 @@ function refresh_all_cli_list(){
     }
 }
 
-
+/**
+ * to make the list of clients clickable
+ * @param {the struct of the client} item 
+ * @param {the index of the client} index 
+ */
 function loadClients(item, index) {
     //console.log(item)
 	$(document).ready(function(){
@@ -98,7 +102,11 @@ function onClickSub(){
 	
   }
 
-  function onClickCancel(){
+
+/**
+ * on click listener for cancel add cliend action
+ */
+function onClickCancel(){
     $(".addCliForm").hide();
   }
 
@@ -128,12 +136,17 @@ function onClickCli(caller_id){
     $(".client_actions").append("</table>");*/
 }
 
-
+/**
+ * TODO
+ * @param {} item 
+ */
   function actionsTable(item) {
 	$(".client_div").append("<tr><th>"+item.Date+"</th><th>"+item.Action+"</th></tr>");
 }
 
-
+/**
+ * on cluck listener to hide a client window
+ */
 function onClickHideCli(){
     $("#client_div").hide();
     clicked_cli_id=-1;
@@ -180,10 +193,10 @@ function onClickDeleteCli(){
   }
 
 
-  /**
-   * on click method when submit a details change of a client.
-   */
-  function onClickSubEdit(){
+/**
+* on click method when submit a details change of a client.
+ */
+function onClickSubEdit(){
     var new_phone=$("#edit_phone").val();
     var new_workPlace=$("#edit_workPlace").val();
     clientInformation=clients_list[Number(clicked_cli_id)];
@@ -203,7 +216,7 @@ function onClickDeleteCli(){
   }
 
 
- /**
+/**
  * on click listener to edit client's credit, and update it as his last action.
  */
 function onClickEditCredit(){
