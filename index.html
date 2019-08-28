@@ -37,7 +37,7 @@
 				Credit: <input type="number" id="credit"><br>
 			</form>
 			<button onclick=onClickSub() class="addCliForm">Submit</button>
-			<button onclick=onClickCancel() class="addCliForm">Cancel</button>
+			<button onclick=onClickCancel(".addcliDiv") class="addCliForm">Cancel</button>
 		</div>
 		<!-- list of all clients -->
 		<ul>
@@ -53,16 +53,16 @@
 			<button onclick=onClickEditCli()>Edit Client</button>
 			<button onclick=onClickDeleteCli()>Delete Client</button>
 			<button onclick=onClickHideCli()>Hide Client</button>
+			<br>
+			<br>
 			<div id="edit_details"></div>
 			<div id="add_action">
 				Credit: <input type="number" id="add_credit"><br>
 				<button onclick=onClickSubAction()>Submit</button>
+				<button onclick=onClickCancel("#add_action")>Cancel</button>
 			</div>
 		</div>
 	</main>
-
-   
-
 </body>
 
 </html>

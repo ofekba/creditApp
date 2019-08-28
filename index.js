@@ -124,8 +124,8 @@ function onClickSub(){
 /**
  * on click listener for cancel add cliend action
  */
-function onClickCancel(){
-    $(".addCliForm").hide();
+function onClickCancel(divToHide){
+    $(divToHide).hide();
   }
 
 
@@ -205,7 +205,8 @@ function onClickDeleteCli(){
     clientInformation=clients[Number(clicked_cli_id)];
     $("#edit_details").html("Phone: <input type=\"number\" id=\"edit_phone\" value=\""+Number(clientInformation.Phone.S)+"\"><br>"
     +"Work place: <input type=\"text\" id=\"edit_workPlace\" value=\""+clientInformation.Workplace.S+"\"><br>"
-    +"<button onclick=onClickSubEdit()>Submit</button>");
+    +"<button onclick=onClickSubEdit()>Submit</button>"
+    +"<button onclick=onClickCancel(\"#edit_details\")>Cancel</button>");
     
   }
 
