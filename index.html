@@ -17,12 +17,17 @@
     </header>
 
     <main>
-        <button onclick=onClickAddCli()>ADD CLI</button>
-		<button onclick=refresh_all_cli_list()>refresh client list</button>
+		<!-- search line -->
 		<div class="searchSection">
 			<label for="search">Search: </label>
 			<input id="search">
 		</div>
+		<br>
+		<!-- add client and refresh clients buttons -->
+        <button onclick=onClickAddCli()>Add new client</button>
+		<button onclick=refresh_all_cli_list()>Refresh client list</button>
+		<br>
+		<!-- add new client form -->
 		<div class="addcliDiv">
 			<form class="addCliForm">
 				First name: <input type="text" id="firstname"><br>
@@ -37,22 +42,23 @@
 		<!-- list of all clients -->
 		<ul>
 		</ul>
-	<!-- div of client -->
-	<div id="client_div">
-		<h1 id="client_name"></h1>
-		<h2 id="client_details"></h2>
-		<h2 id="client_credit"></h2>
-		<div id="client_actions"></div>
-		<button onclick=onClickEditCredit()>Add Action</button>
-		<button onclick=onClickEditCli()>Edit Client</button>
-		<button onclick=onClickDeleteCli()>Delete Client</button>
-		<button onclick=onClickHideCli()>Hide Client</button>
-		<div id="edit_details"></div>
-		<div id="add_action">
-			Credit: <input type="number" id="add_credit"><br>
-			<button onclick=onClickSubAction()>Submit</button>
+		<!-- div of client -->
+		<div id="client_div">
+			<h1 id="client_name"></h1>
+			<div id="client_details"></div>
+			<div id="client_credit"></div>
+			<br>
+			<div id="client_actions"></div>
+			<button onclick=onClickEditCredit()>Add new Action</button>
+			<button onclick=onClickEditCli()>Edit Client</button>
+			<button onclick=onClickDeleteCli()>Delete Client</button>
+			<button onclick=onClickHideCli()>Hide Client</button>
+			<div id="edit_details"></div>
+			<div id="add_action">
+				Credit: <input type="number" id="add_credit"><br>
+				<button onclick=onClickSubAction()>Submit</button>
+			</div>
 		</div>
-	</div>
 	</main>
 
    

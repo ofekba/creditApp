@@ -12,7 +12,7 @@ new_cli_form={
     Workplace: {"S": "aroma"},
     Credit: {"S": "0"},
     Actions: {"L":[
-        {"M": {"Date":{"S":"4.2.2018"}, "Action":{"S":"17"}}},
+        {"M": {"Date":{"S":"-1"}, "Action":{"S":"-1"}}},
         {"M": {"Date":{"S":"-1"}, "Action":{"S":"-1"}}},
         {"M": {"Date":{"S":"-1"}, "Action":{"S":"-1"}}}]}
     
@@ -44,8 +44,9 @@ function refresh_all_cli_list(){
     Http.onreadystatechange = (e) => { 
         if(Http.response!=null){
             cli_arr=Http.response.body.Items
-            cli_arr.forEach(loadClients);
+            cli_arr.sort((a, b) => (a.Firstname.S > b.Firstname.S) ? 1 : -1)
             clients=cli_arr;
+            cli_arr.forEach(loadClients);
             $(search())
         }
     }
@@ -140,13 +141,13 @@ function onClickCli(caller_id){
     $("#client_div").show();
     $("#add_action").hide();
     $("#client_name").html(clientInformation.Firstname.S+" "+clientInformation.Lastname.S);
-    $("#client_details").html(clientInformation.Phone.S+" "+clientInformation.Workplace.S);
-    $("#client_credit").html("CREDIT: "+clientInformation.Credit.S);
-    $("#client_actions").html("<h2>Last actions:</h2>");
+    $("#client_details").html("Phone number: "+clientInformation.Phone.S+"<br>Work place: "+clientInformation.Workplace.S);
+    $("#client_credit").html("<b>CREDIT: "+clientInformation.Credit.S+"<b>");
+    $("#client_actions").html("Last actions:");
     $("#client_actions").append("<table>");
     $("#client_actions").append("<tr><th>Date</th><th>Action</th></tr>");
     clientInformation.Actions.L.forEach(createActionsTable);
-    $("#client_actions").append("</table>");
+    $("#client_actions").append("</table><br>");
 }
 
 /**
@@ -252,8 +253,6 @@ function onClickSubAction(){
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
     today = dd + '/' + mm + '/' + yyyy;
-    console.log("the action "+new_action+"\t the date "+today);
-    console.log(clientInformation.Actions.L);
 
     //update the action table
     for( var i=2; i>0; i--){
@@ -262,7 +261,6 @@ function onClickSubAction(){
     }
     clientInformation.Actions.L[0].M.Date.S=today
     clientInformation.Actions.L[0].M.Action.S=new_action
-    console.log(clientInformation.Actions.L);
 
 
     //update the client credit
