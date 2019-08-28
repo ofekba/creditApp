@@ -64,9 +64,15 @@ function loadClients(item, index) {
 function search() {
     console.log(clients)
     $( "#search" ).autocomplete({
-      source: clients.map(item=>{
-          return item.Firstname.S + ' ' + item.Lastname.S
-      })
+      source: clients.map((item, index)=>{
+          return index + ': ' + item.Firstname.S + ' ' + item.Lastname.S
+      }),
+      select: function(event, ui){
+        var item = ui.item;
+        var itemValue = item.value.substring(0, item.value.indexOf(":"))
+        onClickCli(itemValue)
+        return false
+      }
     });
 }
 
