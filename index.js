@@ -14,6 +14,8 @@ new_cli_form={
     //Actions: {"L":[{"M": {"Date":{"S":"-1"}}, {"Action":{"S":"-1"}} }] }
 }
 
+var clients = []
+var names
 //======================LOAD PAGE======================
 /**
  * wait to load the page
@@ -22,7 +24,6 @@ $( document ).ready(function() {
     console.log('page is fully loaded');
     $(".addCliForm").hide();
     refresh_all_cli_list();
-    var clients_list;
     $("#client_div").hide();
     var clicked_cli_id=-1;
 });
@@ -43,7 +44,8 @@ function refresh_all_cli_list(){
             cli_arr=Http.response.body.Items
             //console.log(cli_arr)
             cli_arr.forEach(loadClients);
-            clients_list=cli_arr;
+            clients=cli_arr;
+            $(search())
         }
     }
 }
@@ -54,6 +56,17 @@ function loadClients(item, index) {
 	$(document).ready(function(){
 		$("ul").append("<li onClick=onClickCli(this.id) id=\""+index+"\">"+index+": "+item.Firstname.S+" "+item.Lastname.S+"</li>");
   
+    });
+}
+
+//=======================SEARCH CLIENT==================
+
+function search() {
+    console.log(clients)
+    $( "#search" ).autocomplete({
+      source: clients.map(item=>{
+          return item.Firstname.S + ' ' + item.Lastname.S
+      })
     });
 }
 
@@ -111,8 +124,8 @@ function onClickSub(){
 function onClickCli(caller_id){
     console.log("clicked on costomer")
 
-    console.log(clients_list[Number(caller_id)])
-    clientInformation=clients_list[Number(caller_id)]
+    console.log(clients[Number(caller_id)])
+    clientInformation=clients[Number(caller_id)]
     console.log(clientInformation.Firstname.S)
     clicked_cli_id=Number(caller_id);
 
@@ -145,8 +158,8 @@ function onClickHideCli(){
  */
   function onClickDeleteCli(){
     console.log(clicked_cli_id);
-    cli_name_obj.Firstname.S=clients_list[clicked_cli_id].Firstname.S
-    cli_name_obj.Lastname.S=clients_list[clicked_cli_id].Lastname.S
+    cli_name_obj.Firstname.S=clients[clicked_cli_id].Firstname.S
+    cli_name_obj.Lastname.S=clients[clicked_cli_id].Lastname.S
     console.log(cli_name_obj);
 
     const Http = new XMLHttpRequest();
@@ -168,6 +181,8 @@ function onClickHideCli(){
  * on click listener to edit client.
  */
   function onClickEditCli(){
+
+
   }
 
  /**
@@ -198,7 +213,7 @@ function onClickSubAction(){
    
     
     //update the client credit
-    clientInformation=clients_list[Number(clicked_cli_id)];
+    clientInformation=clients[Number(clicked_cli_id)];
     new_action=Number(new_action);
     clientInformation.Credit.S=(Number(clientInformation.Credit.S)+new_action).toString();
     $("#client_credit").html("CREDIT: "+clientInformation.Credit.S);
