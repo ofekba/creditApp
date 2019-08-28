@@ -24,7 +24,6 @@ var names
  * wait to load the page
  */
 $( document ).ready(function() {
-    console.log('page is fully loaded');
     $(".addCliForm").hide();
     refresh_all_cli_list();
     $("#client_div").hide();
@@ -45,7 +44,6 @@ function refresh_all_cli_list(){
     Http.onreadystatechange = (e) => { 
         if(Http.response!=null){
             cli_arr=Http.response.body.Items
-            //console.log(cli_arr)
             cli_arr.forEach(loadClients);
             clients=cli_arr;
             $(search())
@@ -59,7 +57,6 @@ function refresh_all_cli_list(){
  * @param {the index of the client} index 
  */
 function loadClients(item, index) {
-    //console.log(item)
 	$(document).ready(function(){
 		$("ul").append("<li onClick=onClickCli(this.id) id=\""+index+"\">"+index+": "+item.Firstname.S+" "+item.Lastname.S+"</li>");
   
@@ -69,7 +66,6 @@ function loadClients(item, index) {
 //=======================SEARCH CLIENT==================
 
 function search() {
-    console.log(clients)
     $( "#search" ).autocomplete({
       source: clients.map((item, index)=>{
           return index + ': ' + item.Firstname.S + ' ' + item.Lastname.S
@@ -107,7 +103,6 @@ function onClickSub(){
     new_cli_form.Credit.S=$("#credit").val().toString();
     if (new_cli_form.Credit.S==null || new_cli_form.Credit.S=="")
         new_cli_form.Credit.S="0"
-    console.log(new_cli_form)
     const Http = new XMLHttpRequest();
     var url='https://832ikitvi4.execute-api.us-east-1.amazonaws.com/Credits/addCostumer';
     Http.responseType = 'json';
@@ -139,10 +134,7 @@ function onClickCancel(){
  * on click listener for a client. open a window with all the client details
  */
 function onClickCli(caller_id){
-    console.log("clicked on costomer")
-    console.log(clients[Number(caller_id)])
     clientInformation=clients[Number(caller_id)]
-    console.log(clientInformation.Firstname.S)
     clicked_cli_id=Number(caller_id);
 
     $("#client_div").show();
@@ -153,20 +145,17 @@ function onClickCli(caller_id){
     $("#client_actions").html("<h2>Last actions:</h2>");
     $("#client_actions").append("<table>");
     $("#client_actions").append("<tr><th>Date</th><th>Action</th></tr>");
-    console.log(clientInformation.Actions.L);
-    clientInformation.Actions.L.forEach(actionsTable);
+    clientInformation.Actions.L.forEach(createActionsTable);
     $("#client_actions").append("</table>");
 }
 
 /**
- * TODO
- * @param {} item 
+ * add action and date to the actions table
+ * @param {item of action and date} item 
  */
-  function actionsTable(item) {
-      console.log(item);
+  function createActionsTable(item) {
       var _date=item.M.Date.S;
       var _action=item.M.Action.S;
-      console.log(_date+" "+_action);
       if(_date!="-1" || _action!="-1")
 	    $("#client_actions").append("<tr><th>"+_date+"</th><th>"+_action+"</th></tr>");
 }
@@ -184,10 +173,8 @@ function onClickHideCli(){
  * on click listener for delete client.
  */
 function onClickDeleteCli(){
-    console.log(clicked_cli_id);
     cli_name_obj.Firstname.S=clients[clicked_cli_id].Firstname.S
     cli_name_obj.Lastname.S=clients[clicked_cli_id].Lastname.S
-    console.log(cli_name_obj);
 
     const Http = new XMLHttpRequest();
     var url='https://832ikitvi4.execute-api.us-east-1.amazonaws.com/Credits/deleteCostumer';
@@ -210,7 +197,6 @@ function onClickDeleteCli(){
  * on click listener to edit client.
  */
   function onClickEditCli(){
-    console.log("onClickEditCli");
     $("#edit_details").show();
     clientInformation=clients[Number(clicked_cli_id)];
     $("#edit_details").html("Phone: <input type=\"number\" id=\"edit_phone\" value=\""+Number(clientInformation.Phone.S)+"\"><br>"
@@ -229,14 +215,13 @@ function onClickSubEdit(){
     clientInformation=clients[Number(clicked_cli_id)];
 
     update_cli_struct={
-        ExpressionAttributeNames: {"#P": "Phone","#W": "Workpalce"},
+        ExpressionAttributeNames: {"#P": "Phone","#W": "Workplace"},
         ExpressionAttributeValues: {":p": {"S":new_phone}, ":w": {"S":new_workPlace}},
         Key: {Firstname: {"S": clientInformation.Firstname.S}, Lastname: {"S": clientInformation.Lastname.S}},
         ReturnValues: "ALL_NEW",
         TableName: "Costumers",
         UpdateExpression: "SET #W = :w, #P = :p"
     }
-    console.log(update_cli_struct);
     sent_put_http_req(update_cli_struct)
     $("#edit_details").hide();
     onClickHideCli();
@@ -265,6 +250,17 @@ function onClickSubAction(){
     var yyyy = today.getFullYear();
     today = dd + '/' + mm + '/' + yyyy;
     console.log("the action "+new_action+"\t the date "+today);
+    console.log(clientInformation.Actions.L);
+
+    //update the action table
+    for( var i=2; i>0; i--){
+        clientInformation.Actions.L[i].M.Date.S=clientInformation.Actions.L[i-1].M.Date.S
+        clientInformation.Actions.L[i].M.Action.S=clientInformation.Actions.L[i-1].M.Action.S
+    }
+    clientInformation.Actions.L[0].M.Date.S=today
+    clientInformation.Actions.L[0].M.Action.S=new_action
+    console.log(clientInformation.Actions.L);
+
 
     //update the client credit
     clientInformation=clients[Number(clicked_cli_id)];
@@ -272,17 +268,20 @@ function onClickSubAction(){
     clientInformation.Credit.S=(Number(clientInformation.Credit.S)+new_action).toString();
     $("#client_credit").html("CREDIT: "+clientInformation.Credit.S);
     update_cli_struct={
-        ExpressionAttributeNames: {"#C":"Credit"},
-        ExpressionAttributeValues: {":c": {"S":clientInformation.Credit.S}},
+        ExpressionAttributeNames: {"#C":"Credit",
+                                    "#A": "Actions"},
+        ExpressionAttributeValues: {":c": {"S":clientInformation.Credit.S}, 
+                                    ":a": {"L": clientInformation.Actions.L}},
         Key: {Firstname: {"S": clientInformation.Firstname.S}, Lastname: {"S": clientInformation.Lastname.S}},
         ReturnValues: "ALL_NEW",
         TableName: "Costumers",
-        UpdateExpression: "SET #C = :c"
+        UpdateExpression: "SET #C = :c, #A = :a"
     }
 
     sent_put_http_req(update_cli_struct)
     $("#add_action").hide();
 }
+
 
 
 /**
