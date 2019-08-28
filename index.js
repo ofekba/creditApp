@@ -185,12 +185,13 @@ function onClickDeleteCli(){
         if(Http.response!=null){
             //do something with ans
             refresh_all_cli_list();
+            onClickHideCli();
         }
     }
 }
 
 
-//======================CLIENT SCREEN-SHOW/DELETE======================
+//======================CLIENT SCREEN-EDIT======================
 
 
 /**
@@ -224,7 +225,6 @@ function onClickSubEdit(){
     }
     sent_put_http_req(update_cli_struct)
     $("#edit_details").hide();
-    onClickHideCli();
   }
 
 
@@ -242,6 +242,7 @@ function onClickEditCredit(){
 function onClickSubAction(){
     //get the new action sum
     var new_action=$("#add_credit").val();
+    clientInformation=clients[Number(clicked_cli_id)];
 
     //current date
     var today = new Date();
@@ -277,9 +278,10 @@ function onClickSubAction(){
         TableName: "Costumers",
         UpdateExpression: "SET #C = :c, #A = :a"
     }
-
+    clients[Number(clicked_cli_id)]=clientInformation;
     sent_put_http_req(update_cli_struct)
     $("#add_action").hide();
+
 }
 
 
@@ -297,7 +299,9 @@ function sent_put_http_req(update_cli_struct){
      Http.send(JSON.stringify(update_cli_struct));
      Http.onreadystatechange = (e) => { 
          if(Http.response!=null){
+             onClickHideCli();
              refresh_all_cli_list();
+             onClickCli(clicked_cli_id);
          }
      }
 }
