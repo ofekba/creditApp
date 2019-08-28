@@ -10,10 +10,13 @@ new_cli_form={
     Lastname: {"S": "duek"},
     Phone: {"S": "050"},
     Workplace: {"S": "aroma"},
-    Credit: {"S": "0"}//,
-    //Actions: {"L":[{"M": {"Date":{"S":"-1"}}, {"Action":{"S":"-1"}} }] }
-}
-
+    Credit: {"S": "0"},
+    Actions: {"L":[
+        {"M": {"Date":{"S":"4.2.2018"}, "Action":{"S":"17"}}},
+        {"M": {"Date":{"S":"-1"}, "Action":{"S":"-1"}}},
+        {"M": {"Date":{"S":"-1"}, "Action":{"S":"-1"}}}]}
+    
+}   
 var clients = []
 var names
 //======================LOAD PAGE======================
@@ -137,7 +140,6 @@ function onClickCancel(){
  */
 function onClickCli(caller_id){
     console.log("clicked on costomer")
-
     console.log(clients[Number(caller_id)])
     clientInformation=clients[Number(caller_id)]
     console.log(clientInformation.Firstname.S)
@@ -149,10 +151,11 @@ function onClickCli(caller_id){
     $("#client_details").html(clientInformation.Phone.S+" "+clientInformation.Workplace.S);
     $("#client_credit").html("CREDIT: "+clientInformation.Credit.S);
     $("#client_actions").html("<h2>Last actions:</h2>");
-    /*$(".client_actions").append("<table>");
-    $(".client_actions").append("<tr><th>Date</th><th>Action</th></tr>");
-    clientInformation.actions.forEach(actionsTable);
-    $(".client_actions").append("</table>");*/
+    $("#client_actions").append("<table>");
+    $("#client_actions").append("<tr><th>Date</th><th>Action</th></tr>");
+    console.log(clientInformation.Actions.L);
+    clientInformation.Actions.L.forEach(actionsTable);
+    $("#client_actions").append("</table>");
 }
 
 /**
@@ -160,7 +163,12 @@ function onClickCli(caller_id){
  * @param {} item 
  */
   function actionsTable(item) {
-	$(".client_div").append("<tr><th>"+item.Date+"</th><th>"+item.Action+"</th></tr>");
+      console.log(item);
+      var _date=item.M.Date.S;
+      var _action=item.M.Action.S;
+      console.log(_date+" "+_action);
+      if(_date!="-1" || _action!="-1")
+	    $("#client_actions").append("<tr><th>"+_date+"</th><th>"+_action+"</th></tr>");
 }
 
 /**
@@ -202,10 +210,9 @@ function onClickDeleteCli(){
  * on click listener to edit client.
  */
   function onClickEditCli(){
-
     console.log("onClickEditCli");
     $("#edit_details").show();
-    clientInformation=clients_list[Number(clicked_cli_id)];
+    clientInformation=clients[Number(clicked_cli_id)];
     $("#edit_details").html("Phone: <input type=\"number\" id=\"edit_phone\" value=\""+Number(clientInformation.Phone.S)+"\"><br>"
     +"Work place: <input type=\"text\" id=\"edit_workPlace\" value=\""+clientInformation.Workplace.S+"\"><br>"
     +"<button onclick=onClickSubEdit()>Submit</button>");
@@ -219,7 +226,7 @@ function onClickDeleteCli(){
 function onClickSubEdit(){
     var new_phone=$("#edit_phone").val();
     var new_workPlace=$("#edit_workPlace").val();
-    clientInformation=clients_list[Number(clicked_cli_id)];
+    clientInformation=clients[Number(clicked_cli_id)];
 
     update_cli_struct={
         ExpressionAttributeNames: {"#P": "Phone","#W": "Workpalce"},
@@ -233,7 +240,6 @@ function onClickSubEdit(){
     sent_put_http_req(update_cli_struct)
     $("#edit_details").hide();
     onClickHideCli();
-
   }
 
 
