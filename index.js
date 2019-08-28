@@ -157,7 +157,9 @@ function onClickCli(caller_id){
       var _date=item.M.Date.S;
       var _action=item.M.Action.S;
       if(_date!="-1" || _action!="-1")
-	    $("#client_actions").append("<tr><th>"+_date+"</th><th>"+_action+"</th></tr>");
+        $("#client_actions").append("<tr><th>"+_date+"</th><th>"+_action+"</th></tr>");
+    else
+        $("#client_actions").append("<tr><th>-</th><th>-</th></tr>");
 }
 
 /**
