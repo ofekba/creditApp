@@ -112,6 +112,7 @@ li {
 	background-color: #EEEEEE;
 	border: 1px solid #DDDDDD;
 	padding: 3px;
+	width: 30%
   }
 
  .addcliDiv{
@@ -125,4 +126,8 @@ li {
 	border: 1px solid #DDDDDD;
 	padding: 3px;
 	margin: 5px; 
+  }
+  .searchSection{
+	  float: right;
+	  margin-right: 50%
   }
